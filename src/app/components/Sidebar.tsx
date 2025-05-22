@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client"; // supabase client instance
-import { getUserDetailsClient } from "@/utils/supabase/userActions";
+import { getUserDetailsClient } from "@/utils/supabase/actions/userActions";
 import {
   BsFillPersonFill,
   BsFillHouseDoorFill,

@@ -4,6 +4,33 @@
   --background: #ffffff;
   --foreground: #171717;
 }
+/* For Chrome, Edge, and Safari */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;         /* thin vertical scrollbar */
+  height: 6px;        /* thin horizontal scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+/* ❌ Hide up/down (increment/decrement) arrow buttons */
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.5); /* scrollbar color */
+  border-radius: 4px;
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;           /* "auto" or "thin" */
+  scrollbar-color: rgba(100, 100, 100, 0.5) transparent;
+}
+
 
 .animate-slide-in {
   animation: slideIn 0.5s ease-in-out both;

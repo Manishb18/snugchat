@@ -1,6 +1,6 @@
 import { User } from "@supabase/supabase-js";
-import { User as UserType } from "../types";
-import { createClient } from "./client";
+import { User as UserType } from "../../types";
+import { createClient } from "../client";
 
 const supabase = createClient();
 
@@ -27,7 +27,10 @@ export async function getChatOrCreate({
   selectedUser: UserType;
 }) {
   // Always sort user IDs to respect the unique index
+  console.log("creating new chat");
   const [user1, user2] = [currentUser.id, selectedUser.id].sort();
+
+  console.log("before fetching...")
 
   // 1. Try to fetch existing chat
   const { data: chatData, error: chatError } = await supabase
@@ -37,10 +40,14 @@ export async function getChatOrCreate({
     .eq("user2", user2)
     .single();
 
+    console.log("aftet fetching");
+
   // 2. If found, return it
   if (chatData && !chatError) {
     return chatData;
   }
+
+  console.log("no chat found");
 
   // 3. If not found, create a new chat
   const { data: newChat, error: createError } = await supabase

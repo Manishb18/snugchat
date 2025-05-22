@@ -5,21 +5,21 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BsFilter, BsThreeDotsVertical } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
 import { TbMessageCirclePlus } from "react-icons/tb";
-import { fetchProfileById } from "@/utils/supabase/userActions";
+import { fetchProfileById } from "@/utils/supabase/actions/userActions";
 import { User, UserWithChatInfo } from "@/utils/types";
 import SingleChatTile from "./_allChats/SingleChatTile";
 import { useChat } from "@/context/ChatContext";
 import {
   fetchChatsForUser,
   getChatOrCreate,
-} from "@/utils/supabase/chatActions";
+} from "@/utils/supabase/actions/chatActions";
 import { useUser } from "@/context/UserContext";
 import SidePanel from "./_allChats/SidePanel";
 export default function Chats() {
   const [showSidePanel, setShowSidePanel] = useState(false);
 
   const [chatUsers, setChatUsers] = useState<UserWithChatInfo[]>([]);
-  const { setSelectedUser, setChatId } = useChat();
+  const { selectedUser, setSelectedUser, setChatId } = useChat();
   const { user: currentUser } = useUser();
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function Chats() {
       setChatUsers(usersWithChatInfo);
     };
     fetchProfiles();
-  }, [currentUser]);
+  }, [currentUser, selectedUser]);
 
   const handleSelectChat = async (user: User) => {
     setSelectedUser(user);
@@ -60,9 +60,7 @@ export default function Chats() {
   return (
     <div className="w-[25%] flex flex-col h-full shadow-md relative bg-gray-50">
       <AnimatePresence>
-        {showSidePanel && (
-         <SidePanel close={()=>setShowSidePanel(false)}/>
-        )}
+        {showSidePanel && <SidePanel close={() => setShowSidePanel(false)} />}
       </AnimatePresence>
 
       {/* Header Section */}

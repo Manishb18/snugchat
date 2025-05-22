@@ -1,6 +1,6 @@
 // utils/supabase/client.ts
-import { User } from "../types";
-import { createClient } from "./client"; // self-import is fine if it's the same file
+import { User } from "../../types";
+import { createClient } from "../client";
 const supabase = createClient();
 export async function getUserDetailsClient() {
   const {
@@ -23,21 +23,27 @@ export async function getUserDetailsClient() {
   return profile;
 }
 
-export async function fetchAllProfiles() {
+export async function fetchAllProfiles(searchQuery = "") {
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
 
   if (userError) {
-    console.error("Error fetching user : ", userError);
+    console.error("Error fetching user:", userError);
     return null;
   }
 
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .neq("id", user?.id);
+  let query = supabase.from("profiles").select("*").neq("id", user?.id); // Exclude current user
+
+  // Apply search filter if searchQuery is provided
+  if (searchQuery.trim() !== "") {
+    query = query.or(
+      `name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`
+    );
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error("Error fetching profiles:", error);
