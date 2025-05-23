@@ -101,9 +101,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      {/* Left Section - Brand & Description */}
-      <div className="flex items-center mb-10">
+    <main className="min-h-screen flex items-center justify-center">
+      {/* Brand Section */}
+      <section className="flex items-center mb-10">
         <div className="w-20 h-20 bg-green-500/25 backdrop-blur-xl rounded-3xl flex items-center justify-center mr-6 shadow-2xl border border-green-400/30 hover:bg-green-500/30 transition-all duration-300 hover:scale-105">
           <svg
             className="w-10 h-10 text-white drop-shadow-lg"
@@ -113,19 +113,19 @@ export default function LoginPage() {
             <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
           </svg>
         </div>
-        <div>
+        <header>
           <h1 className="text-6xl font-bold tracking-tight text-green-base drop-shadow-lg">
             Snug Chat
           </h1>
           <div className="w-24 h-1 bg-white rounded-full mt-2 shadow-sm"></div>
-        </div>
-      </div>
+        </header>
+      </section>
 
-      {/* Right Section - Auth Form */}
-      <div className="w-full lg:w-1/2 bg-white flex items-center justify-center p-8">
+      {/* Auth Form Section */}
+      <section className="w-full lg:w-1/2 bg-white flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           {/* Mobile logo */}
-          <div className="lg:hidden text-center mb-8">
+          <header className="lg:hidden text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-600 to-emerald-500 rounded-2xl mb-4">
               <svg
                 className="w-8 h-8 text-white"
@@ -136,11 +136,11 @@ export default function LoginPage() {
               </svg>
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Snug Chat</h1>
-          </div>
+          </header>
 
           <AuthForm login={login} signup={signup} />
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

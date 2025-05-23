@@ -41,7 +41,7 @@ export default function SidePanel({ close }: { close: () => void }) {
       animate={{ x: 0 }}
       exit={{ x: "-100%" }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="absolute inset-0 bg-white bg-opacity-60 z-50 flex justify-end"
+      className="absolute inset-0 bg-white bg-opacity-60 z-50 flex justify-end overflow-y-auto custom-scrollbar"
     >
       <div className="h-full bg-white text-black p-4 w-full">
         <div className="flex justify-between items-center mb-4">
