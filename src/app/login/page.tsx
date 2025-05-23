@@ -97,7 +97,7 @@ export default function LoginPage() {
     }
 
     revalidatePath("/", "layout");
-    redirect("");
+    redirect("/");
   }
 
   return (
