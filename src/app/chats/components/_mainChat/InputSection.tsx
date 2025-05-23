@@ -12,8 +12,9 @@ import { useUser } from "@/context/UserContext";
 import { createClient } from "@/utils/supabase/client";
 import { sendMessage } from "@/utils/supabase/actions/messageActions";
 import MediaUploadModal from "./MediaUploadModal";
+import EmojiPicker from "emoji-picker-react";
 
-const ICON_SIZE = 14;
+const ICON_SIZE = 16;
 
 export default function InputSection() {
   const [message, setMessage] = useState("");
@@ -21,7 +22,7 @@ export default function InputSection() {
   const { user: currentUser } = useUser();
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const supabase = createClient();
 
   const handleSend = async () => {
@@ -37,6 +38,10 @@ export default function InputSection() {
     } catch (error) {
       console.error("Failed to send message:", error);
     }
+  };
+
+  const handleEmojiClick = (emojiObject: { emoji: string }) => {
+    setMessage((prevMessage) => prevMessage + emojiObject.emoji);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +88,7 @@ export default function InputSection() {
   };
 
   return (
-    <div className="border-t border-gray-400/25 shadow-lg px-4 pb-6">
+    <div className="border-t border-gray-400/25 shadow-lg px-4 pb-6 relative">
       <div className="w-full relative py-3">
         <input
           type="text"
@@ -104,11 +109,12 @@ export default function InputSection() {
 
       <div className="flex justify-between items-center mt-2">
         <div className="flex items-center gap-4">
-          <div className="file-upload cursor-pointer hover:bg-gray-100 p-1 rounded-md relative">
+          <div className="file-upload cursor-pointer hover:bg-gray-100  rounded-md relative group">
             <ImAttachment
               size={ICON_SIZE}
               onClick={() => document.getElementById("file-input")?.click()}
             />
+            <Label text="file upload" />
             <input
               id="file-input"
               type="file"
@@ -118,12 +124,43 @@ export default function InputSection() {
             />
           </div>
 
-          <FaRegFaceSmile size={ICON_SIZE} />
-          <FaRegClock size={ICON_SIZE} />
-          <AiOutlineHistory size={ICON_SIZE} />
-          <HiOutlineSparkles size={ICON_SIZE} />
-          <PiNoteFill size={ICON_SIZE} />
-          <FaMicrophone size={ICON_SIZE} />
+          <div className="cursor-pointer hover:bg-gray-100  rounded-md relative group">
+            <FaRegFaceSmile
+              size={ICON_SIZE}
+              onClick={() => setShowEmojiPicker((prev) => !prev)}
+              className="cursor-pointer"
+            />
+            <Label text="emojis" />
+            {showEmojiPicker && (
+              <EmojiPicker
+                onEmojiClick={(emojiObject) => handleEmojiClick(emojiObject)}
+                className="!absolute bottom-[100%] left-[12%] z-10"
+              />
+            )}
+          </div>
+
+          <div className="relative group">
+            <FaRegClock size={ICON_SIZE} />
+            <Label text="coming soon" />
+          </div>
+          <div className="relative group">
+            <AiOutlineHistory size={ICON_SIZE} />
+            <Label text="coming soon" />
+          </div>
+          <div className="relative group">
+            <HiOutlineSparkles size={ICON_SIZE} />
+            <Label text="coming soon" />
+          </div>
+
+          <div className="relative group">
+            <PiNoteFill size={ICON_SIZE} />
+            <Label text="coming soon" />
+          </div>
+
+          <div className="relative group">
+            <FaMicrophone size={ICON_SIZE} />
+            <Label text="coming soon" />
+          </div>
         </div>
       </div>
 
@@ -137,3 +174,11 @@ export default function InputSection() {
     </div>
   );
 }
+
+const Label = ({ text }: { text: string }) => {
+  return (
+    <div className="hidden group-hover:inline-block absolute top-[-210%] right-[-100]  whitespace-nowrap text-[10px] text-gray-400 font-medium border border-gray-100 bg-gray-200 rounded-lg p-2 ">
+      {text}
+    </div>
+  );
+};

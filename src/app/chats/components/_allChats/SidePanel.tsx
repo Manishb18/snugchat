@@ -65,11 +65,14 @@ export default function SidePanel({ close }: { close: () => void }) {
           />
         </div>
 
-        <div className="flex items-center gap-2 mt-4 p-3 rounded-xl hover:bg-green-light cursor-pointer">
+        <div className="flex items-center gap-2 mt-4 p-3 rounded-xl hover:bg-green-light cursor-normal group">
           <span className="w-10 h-10 rounded-full bg-green-base flex items-center justify-center">
             <MdGroupAdd size={22} className="text-white" />
           </span>
           <h1 className="font-bold">New Group</h1>
+          <span className="hidden group-hover:block text-xs font-medium self-end ml-auto">
+            coming soon
+          </span>
         </div>
 
         <ShowAllProfiles profiles={profiles} close={close} loading={loading} />

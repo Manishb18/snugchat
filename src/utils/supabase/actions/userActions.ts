@@ -1,7 +1,25 @@
 // utils/supabase/client.ts
-import { User } from "../../types";
+
+import { User as UserType } from "@supabase/supabase-js";
 import { createClient } from "../client";
+import { User } from "@/utils/types";
 const supabase = createClient();
+
+export async function getUserDetails({
+  currentUser,
+}: {
+  currentUser: UserType;
+}) {
+  if (!currentUser) return null;
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("id, name, email, avatar_url")
+    .eq("id", currentUser.id)
+    .single();
+  if (profileError || !profile) return null;
+
+  return profile;
+}
 export async function getUserDetailsClient() {
   const {
     data: { user },

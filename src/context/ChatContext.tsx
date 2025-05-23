@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 import { User } from "@/utils/types";
 
 type ChatContextType = {
@@ -15,9 +15,14 @@ const ChatContext = createContext<ChatContextType | undefined>(undefined);
 export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [chatId, setChatId] = useState<string | null>(null);
+  useEffect(() => {
+    console.log("inside chat provider", selectedUser, chatId);
+  }, [selectedUser, chatId]);
 
   return (
-    <ChatContext.Provider value={{ selectedUser, setSelectedUser, chatId, setChatId }}>
+    <ChatContext.Provider
+      value={{ selectedUser, setSelectedUser, chatId, setChatId }}
+    >
       {children}
     </ChatContext.Provider>
   );

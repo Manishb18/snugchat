@@ -1,10 +1,7 @@
 "use client";
 import { useChat } from "@/context/ChatContext";
 import { useUser } from "@/context/UserContext";
-import {
-  getChatOrCreate,
-  getMessages,
-} from "@/utils/supabase/actions/chatActions";
+import { getMessages } from "@/utils/supabase/actions/chatActions";
 import { Message } from "@/utils/types";
 import { createClient } from "@/utils/supabase/client";
 import { db } from "@/utils/indexedDB";
@@ -19,12 +16,14 @@ export default function MessagesSection() {
   const { user: currentUser, loading } = useUser();
   const [messages, setMessages] = useState<Message[] | []>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [loadingMessages, setLoadingMessages] = useState(false);
 
   useEffect(() => {
     if (!selectedUser || !currentUser || !chatId) return;
 
     const fetchMessages = async () => {
       // Fetch messages from IndexedDB
+      setLoadingMessages(true);
       const messagesData = await db.messages
         .where("chat_id")
         .equals(chatId)
@@ -32,11 +31,12 @@ export default function MessagesSection() {
 
       if (messagesData) setMessages(messagesData);
 
+      setLoadingMessages(false);
+
       // Fetch messages from server and update IndexedDB
       const serverMessages = await getMessages({ chatId });
       if (serverMessages) {
         await db.messages.bulkPut(serverMessages);
-        setMessages(serverMessages);
       }
     };
 
@@ -75,10 +75,7 @@ export default function MessagesSection() {
           }
 
           if (fullMessage) {
-            // Update IndexedDB
             await db.messages.put(fullMessage);
-
-            // Update state
             setMessages((prev) => [...prev, fullMessage]);
           }
         }
@@ -113,17 +110,26 @@ export default function MessagesSection() {
   };
 
   if (loading) {
-    return <div className="flex-1">Loading....</div>;
+    return (
+      <div
+        className={`flex-1 h-full  flex flex-col overflow-y-auto  custom-scrollbar bg-[url("/doodles.jpg")] relative`}
+      >
+        Loading Messages
+      </div>
+    );
   }
 
   return (
-    <div className="flex-1 h-full bg-gray-50 flex flex-col overflow-y-auto p-4 custom-scrollbar">
+    <div
+      className={`flex-1 h-full  flex flex-col overflow-y-auto  custom-scrollbar bg-[url("/doodles.jpg")] relative`}
+    >
+      <div className="bg-white/25 absolute inset-0 w-full h-full" />
       {messages.length === 0 ? (
-        <div className="text-sm bg-green-light p-2 rounded-lg w-fit mb-4 mx-auto mt-auto">
+        <div className="text-sm bg-green-light p-2 rounded-lg w-fit mb-4 mx-auto mt-auto z-[1]">
           This is the beginning of your conversation with {selectedUser.name}
         </div>
       ) : (
-        <div className="flex flex-col mt-auto">
+        <div className="flex flex-col mt-auto z-[1]">
           {messages.map((msg) => (
             <div
               key={msg.id}

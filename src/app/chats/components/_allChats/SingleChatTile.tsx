@@ -1,4 +1,5 @@
 "use client";
+import { useChat } from "@/context/ChatContext";
 import { User } from "@/utils/types";
 import Image from "next/image";
 import React, { Dispatch, SetStateAction } from "react";
@@ -16,7 +17,7 @@ export default function SingleChatTile({
   updatedAt,
   onClick,
 }: Props) {
-  console.log("user in single tile : ", lastMessage);
+  const { selectedUser } = useChat();
   function formatUpdatedAt(dateStr: string | null | undefined): string {
     if (!dateStr) return "";
 
@@ -53,7 +54,9 @@ export default function SingleChatTile({
 
   return (
     <div
-      className="flex gap-4 p-1 px-4 border border-gray-400/10 shadow-md bg-white hover:bg-gray-100 cursor-pointer"
+      className={`flex gap-4 p-1 px-4 border shadow-sm border-gray-400/10   hover:bg-gray-100 cursor-pointer ${
+        selectedUser?.id === user.id ? "bg-gray-100" : "bg-white"
+      }`}
       onClick={onClick}
     >
       <Image

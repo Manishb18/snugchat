@@ -18,6 +18,16 @@ export const fetchChatsForUser = async (currentUserId: string) => {
 
   return data;
 };
+// export async function getChatId({
+//   currentUser,
+//   selectedUser,
+// }: {
+//   currentUser: User;
+//   selectedUser: UserType;
+// }) {
+//   const [user1, user2] = [currentUser.id, selectedUser.id].sort();
+
+// }
 
 export async function getChatOrCreate({
   currentUser,
@@ -26,28 +36,21 @@ export async function getChatOrCreate({
   currentUser: User;
   selectedUser: UserType;
 }) {
-  // Always sort user IDs to respect the unique index
-  console.log("creating new chat");
   const [user1, user2] = [currentUser.id, selectedUser.id].sort();
 
-  console.log("before fetching...")
-
   // 1. Try to fetch existing chat
-  const { data: chatData, error: chatError } = await supabase
+  const dataPromise = supabase
     .from("chats")
     .select("id")
     .eq("user1", user1)
     .eq("user2", user2)
     .single();
 
-    console.log("aftet fetching");
-
+  const { data: chatData, error: chatError } = await dataPromise;
   // 2. If found, return it
   if (chatData && !chatError) {
     return chatData;
   }
-
-  console.log("no chat found");
 
   // 3. If not found, create a new chat
   const { data: newChat, error: createError } = await supabase
@@ -65,11 +68,11 @@ export async function getChatOrCreate({
 }
 
 export async function getMessages({ chatId }: { chatId: string }) {
-  const { data : messagesData, error : messagesError } = await supabase
-  .from("messages_with_profiles")
-  .select("*")
-  .eq("chat_id", chatId)
-  .order("created_at", { ascending: true });
+  const { data: messagesData, error: messagesError } = await supabase
+    .from("messages_with_profiles")
+    .select("*")
+    .eq("chat_id", chatId)
+    .order("created_at", { ascending: true });
 
   if (messagesError) {
     console.error("Error fetching messages:", messagesError);
@@ -78,4 +81,3 @@ export async function getMessages({ chatId }: { chatId: string }) {
 
   return messagesData;
 }
-

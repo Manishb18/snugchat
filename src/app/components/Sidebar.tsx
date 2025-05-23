@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { createClient } from "@/utils/supabase/client"; // supabase client instance
-import { getUserDetailsClient } from "@/utils/supabase/actions/userActions";
+import { createClient } from "@/utils/supabase/client";
 import {
   BsFillPersonFill,
   BsFillHouseDoorFill,
@@ -18,44 +17,44 @@ import {
 import { MdShare } from "react-icons/md";
 import { TbStarsFilled, TbLayoutSidebarLeftExpandFilled } from "react-icons/tb";
 import { usePathname } from "next/navigation";
+import { useUser } from "@/context/UserContext";
+import toast from "react-hot-toast";
+import Image from "next/image";
 export default function Sidebar() {
   const path = usePathname();
   const [showUserBox, setShowUserBox] = useState(false);
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
-  const supabase = createClient();
+  const [user, setUser] = useState<{ name: string; email: string } | null>(
+    null
+  );
+  const { user: currentUser } = useUser();
+  const [loading, setLoading] = useState(false);
 
-  
   useEffect(() => {
-    async function fetchUser() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+    if (!currentUser) return;
+    const supabase = createClient();
+    const fetchUserDetails = async () => {
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("name, email, avatar_url")
+        .eq("id", currentUser.id)
+        .single();
 
-      if (session) {
-        const data = await getUserDetailsClient();
-        setUser(data);
+      if (profileError) {
+        console.error("profile fetch error ::", profileError);
       }
-    }
-    fetchUser();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (session) {
-          const data = await getUserDetailsClient();
-          setUser(data);
-        } else {
-          setUser(null);
-        }
+      if (profile) {
+        setUser(profile);
       }
-    );
-
-    return () => {
-      authListener?.subscription.unsubscribe();
     };
-  }, [supabase]);
+    fetchUserDetails();
+  }, [currentUser]);
 
   const handleLogout = async () => {
+    setLoading(true);
     await fetch("/api/logout", { method: "POST" });
+    toast.success("you are logged out");
+    setLoading(false);
+    toggleUserBox();
     window.location.reload();
   };
 
@@ -75,14 +74,26 @@ export default function Sidebar() {
     BsFillGearFill, // Settings
   ];
 
-  if(path.includes("/login")){
+  if (path.includes("/login")) {
     return null;
   }
 
   return (
     <div className="min-h-screen border-r border-gray-400/25 shadow-lg p-4 px-5 flex flex-col items-center ">
-      <div className="relative cursor-pointer" onClick={toggleUserBox}>
-        <BsFillPersonFill size={22} className="text-gray-500" />
+      <div className="relative cursor-pointer">
+        <Image
+          src={"/avatar.png"}
+          alt="avatar"
+          width={20}
+          height={20}
+          className="w-6 h-6 rounded-full"
+          onClick={toggleUserBox}
+        />
+        {/* <BsFillPersonFill
+          size={22}
+          className="text-gray-500"
+          onClick={toggleUserBox}
+        /> */}
         {showUserBox && user && (
           <div className="fixed left-16 top-2 bg-white shadow-md p-4 rounded-lg text-sm w-48 border border-gray-400/25  z-10">
             <p className="font-semibold">{user.name}</p>
@@ -91,7 +102,7 @@ export default function Sidebar() {
               onClick={handleLogout}
               className="mt-3 w-full bg-green-base text-white py-1 rounded hover:bg-red-600 transition"
             >
-              Logout
+              {!loading ? "Logout" : "Logging out..."}
             </button>
           </div>
         )}
