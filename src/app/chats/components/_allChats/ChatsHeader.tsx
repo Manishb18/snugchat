@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { BsFilter, BsThreeDotsVertical } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
 import { HiFolderDownload } from "react-icons/hi";
 import { LuListFilter } from "react-icons/lu";

@@ -2,24 +2,23 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import {
-  BsFillPersonFill,
   BsFillHouseDoorFill,
   BsFillChatDotsFill,
-  BsFillTicketPerforatedFill,
-  BsBarChartFill,
   BsListUl,
-  BsFillMegaphoneFill,
-  BsJournalRichtext,
   BsFillImageFill,
-  BsCheck2Square,
   BsFillGearFill,
+  BsGraphUp,
 } from "react-icons/bs";
-import { MdShare } from "react-icons/md";
+import { ImAddressBook } from "react-icons/im";
+import { PiListChecks } from "react-icons/pi";
+import { TiFlowMerge } from "react-icons/ti";
 import { TbStarsFilled, TbLayoutSidebarLeftExpandFilled } from "react-icons/tb";
 import { usePathname } from "next/navigation";
 import { useUser } from "@/context/UserContext";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import { HiMegaphone } from "react-icons/hi2";
+import { IoTicket } from "react-icons/io5";
 export default function Sidebar() {
   const path = usePathname();
   const [showUserBox, setShowUserBox] = useState(false);
@@ -63,14 +62,14 @@ export default function Sidebar() {
   const icons = [
     BsFillHouseDoorFill, // Home
     BsFillChatDotsFill, // Chat
-    BsFillTicketPerforatedFill, // Ticket
-    BsBarChartFill, // Chart
+    IoTicket, // Ticket
+    BsGraphUp, // Chart
     BsListUl, // List (no fill version)
-    BsFillMegaphoneFill, // Megaphone
-    MdShare, // Network/AI (solid)
-    BsJournalRichtext, // Book/Docs (no fill version)
+    HiMegaphone,
+    TiFlowMerge,
+    ImAddressBook,
     BsFillImageFill, // Image
-    BsCheck2Square, // Checklist (no fill version)
+    PiListChecks,
     BsFillGearFill, // Settings
   ];
 
